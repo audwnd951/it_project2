@@ -16,9 +16,9 @@ import time
 driver = webdriver.Chrome("c:/python/chromedriver") # 드라이버 선택 후 파일 다운로드 경로 설정
 
 def midi_crawling(genre,midifile_number=None):    # midi_crawling(장르선택, 받을 midifile 개수)
-    driver.get('https://freemidi.org/genre-'+str(genre))     # midi 사이트 주소
+    driver.get('https://freemidi.org/genre-'+str(genre))     # midi 사이트 주소 + 장르선택
     driver.implicitly_wait(10)
-    time.sleep(2)
+    time.sleep(2) # 창 로딩 완료 될 시간
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     url1 = []     # 전체 url
     url2 = []     # 곡 다운로드 페이지 url
@@ -30,19 +30,19 @@ def midi_crawling(genre,midifile_number=None):    # midi_crawling(장르선택, 
     for j in url1:      
         driver.get(j)
         soup = BeautifulSoup(driver.page_source, 'html.parser')
-        for k in soup.select("#mainContent > div > div > div > div > div > span > a[href]"):    #> div:nth-child(3) > div > div > span > a")
+        for k in soup.select("#mainContent > div > div > div > div > div > span > a[href]"):
             url2.append("https://freemidi.org/"+k.attrs['href'])
     print("url 복사가 완료되었습니다.")
     
-    long = len(url2)
+    long = len(url2)    
     for z in url2[:midifile_number]:
         driver.get(z)
         driver.implicitly_wait(30)            
-        driver.find_element_by_xpath('//*[@id="downloadmidi"]').click()
+        driver.find_element_by_xpath('//*[@id="downloadmidi"]').click()     # 다운로드 클릭
         print('다운로드')
         long = long-1
         print(str(long)+'개 파일 남음')
     driver.close()
     
 
-    
+midi_crawling('rock',2)
